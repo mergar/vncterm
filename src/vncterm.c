@@ -48,7 +48,7 @@
 #include <jail.h>
 //#include <ctype.h>
 
-#include "svncterm.h"
+#include "vncterm.h"
 #include "glyphs.h"
 
 #define	JP_USER		0x01000000

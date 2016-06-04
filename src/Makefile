@@ -1,7 +1,7 @@
-PACKAGE=svncterm
+PACKAGE=vncterm
 VERSION=1.2
 
-all: svncterm
+all: vncterm
 
 glyphs.h: genfont
 	./genfont > glyphs.h
@@ -9,8 +9,8 @@ glyphs.h: genfont
 genfont: genfont.c
 	cc -g -O2 -o $@ genfont.c -Wall -lz
 
-svncterm: svncterm.c
-	cc -O2 -g -o $@ svncterm.c -Wall -Wno-deprecated-declarations -ljail -lvncserver -lpthread -lz -ljpeg -lutil -lgnutls -I/usr/local/include -L/usr/local/lib
+vncterm: vncterm.c
+	cc -O2 -g -o $@ vncterm.c -Wall -Wno-deprecated-declarations -ljail -lvncserver -lpthread -lz -ljpeg -lutil -lgnutls -I/usr/local/include -L/usr/local/lib
 
 clean:
-	rm -rf genfont svncterm svncterm.1 *.core
+	rm -rf genfont vncterm vncterm.1 *.core
