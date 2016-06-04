@@ -1,12 +1,13 @@
 #!/usr/local/bin/cbsd
 #v10.3.0
 MYARG="jname"
-MYOPTARG="mode addr port command"
+MYOPTARG="mode addr port command password"
 MYDESC="Run VNC server for jail"
 ADDHELP="mode=run, stop\n\
 addr= IP address for listen, default - nodeip\n\
 port= PORT for listen, default - auto\n\
-command= run comman on start, default: /usr/bin/login\n"
+command= run comman on start, default: /bin/csh\n\
+password= set password, 'cbsd' as default\n"
 
 . ${subr}
 . ${system}
@@ -23,6 +24,8 @@ cbsdvnc="${moduledir}/vncterm.d/cbsdvnc"
 
 [ ! -f "${cbsdvnc}" ] && err 1 "${MAGENTA}No cbsdvnc, please do: ${GREEN}make -C ${moduledir}/vncterm.d${NORMAL}"
 
-[ -z "${command}" ] && command="/usr/bin/login"
+[ -z "${command}" ] && command="/bin/csh"
+[ -z "${password}" ] && password="/bin/csh"
 
-${cbsdvnc} -j ${jid} -s ${command}
+${cbsdvnc} -j ${jid} -s ${command} -p ${password}
+

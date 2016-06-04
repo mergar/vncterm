@@ -75,6 +75,7 @@ int is_numbercmd(int argc, char **argv);
 int isnum = 0;
 int findjid = -1;
 char *findjname = NULL;
+char vncpassword[50];
 
 #define is_digit(c)	((unsigned int)((c) - '0') <= 9)
 
@@ -1790,6 +1791,15 @@ create_vncterm (int argc, char** argv, int maxx, int maxy)
 
   screen->newClientHook = new_client;
 
+    if (strlen(vncpassword)>1) {
+	static const char* passwords[2]={vncpassword,0};
+	screen->authPasswdData=(void*)passwords;
+    }
+
+//    static const char* passwords[2]={"secret",0};
+//    screen->authPasswdData=(void*)passwords;
+//    screen->checkPassword=rfbCheckPasswordByList;
+
   vt->maxx = screen->width;
   vt->maxy = screen->height;
 
@@ -1868,7 +1878,9 @@ main (int argc, char** argv)
 	int jflags = 0;
 	int lastjid = 0;
 
-	while ((c = getopt(argc, argv, "j:s:")) >= 0)
+	memset(vncpassword,0,sizeof(vncpassword));
+
+	while ((c = getopt(argc, argv, "j:s:p:")) >= 0)
 	switch (c) {
 		case 'j':
 			findjid = strtoul(optarg, &ep, 10);
@@ -1885,10 +1897,13 @@ main (int argc, char** argv)
 			memset(command, 0, strlen(optarg) + 1);
 			strcpy(command, optarg);
 			break;
+		case 'p':
+			strcpy(vncpassword,optarg);
+			break;
 	}
 
 	if ((findjid==-1)&&(!findjname)) {
-		printf("usage: svncterm -j [ jid or jname] [-s command/shell (/bin/csh)]\n");
+		printf("usage: svncterm -j [ jid or jname] [-s command/shell (/bin/csh)] [-p password]\n");
 		return 1;
 	}
 
