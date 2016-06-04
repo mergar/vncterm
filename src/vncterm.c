@@ -1950,7 +1950,7 @@ main (int argc, char** argv)
     signal (SIGTERM, SIG_DFL);
     signal (SIGINT, SIG_DFL);
 
-    execlp("/usr/sbin/jexec", "/usr/sbin/jexec", jid, "/bin/csh", (char *)NULL);
+    execlp("/usr/sbin/jexec", "/usr/sbin/jexec", jid, command, (char *)NULL);
     perror ("Error: exec failed\n");
     exit (-1); // should not be reached
   } else if (pid == -1) {
