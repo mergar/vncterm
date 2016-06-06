@@ -1,9 +1,9 @@
 #!/usr/local/bin/cbsd
 #v10.3.0
-MYARG="jname"
-MYOPTARG="mode addr port command password"
+MYARG="jname mode"
+MYOPTARG="addr port command password"
 MYDESC="Run VNC server for jail"
-ADDHELP="mode=run, stop\n\
+ADDHELP="mode=start, stop\n\
 addr= IP address for listen, default - nodeip\n\
 port= PORT for listen, default - auto\n\
 command= run comman on start, default: /bin/csh\n\
@@ -22,10 +22,22 @@ init $*
 
 cbsdvnc="${moduledir}/vncterm.d/cbsdvnc"
 
-[ ! -f "${cbsdvnc}" ] && err 1 "${MAGENTA}No cbsdvnc, please do: ${GREEN}make -C ${moduledir}/vncterm.d${NORMAL}"
+[ ! -x "${cbsdvnc}" ] && err 1 "${MAGENTA}No cbsdvnc, please do: ${GREEN}make -C ${moduledir}/vncterm.d${NORMAL}"
 
 [ -z "${command}" ] && command="/bin/csh"
 [ -z "${password}" ] && password="cbsd"
 
-${cbsdvnc} -j ${jid} -s ${command} -p ${password}
 
+case "${mode}" in
+	run)
+		${cbsdvnc} -j ${jid} -s ${command} -p ${password}
+		;;
+	stop)
+		echo "STOP"
+		exit 0
+		${cbsdvnc} -j ${jid} -s ${command} -p ${password}
+		;;
+	*)
+		${ECHO} "${MAGENTA}Unknown mode. Use ${GREEN}start${MAGENTA} or ${GREEN}stop${NORMAL}"
+		;;
+esac
