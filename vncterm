@@ -25,7 +25,7 @@ cbsdvnc="${moduledir}/vncterm.d/cbsdvnc"
 [ ! -f "${cbsdvnc}" ] && err 1 "${MAGENTA}No cbsdvnc, please do: ${GREEN}make -C ${moduledir}/vncterm.d${NORMAL}"
 
 [ -z "${command}" ] && command="/bin/csh"
-[ -z "${password}" ] && password="/bin/csh"
+[ -z "${password}" ] && password="cbsd"
 
 ${cbsdvnc} -j ${jid} -s ${command} -p ${password}
 
