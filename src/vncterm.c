@@ -46,7 +46,6 @@
 #include <sys/jail.h>
 
 #include <jail.h>
-//#include <ctype.h>
 
 #include "vncterm.h"
 #include "glyphs.h"
@@ -1804,29 +1803,9 @@ create_vncterm (int argc, char** argv, int maxx, int maxy)
     ok = 1;
 
     if (listen_str != NULL) {
-//		screen->listenInterface = htonl(INADDR_ANY);
-//	} else if (!strcmp(listen_str, "localhost")) {
-//		screen->listenInterface = htonl(INADDR_LOOPBACK);
-//	} else {
-//		struct hostent *hp;
 		in_addr_t iface = inet_addr(listen_str);
-
-//		if (iface == htonl(INADDR_NONE)) {
-//			if (!host_lookup) {
-//				ok = 0;
-//			} else if (!(hp = gethostbyname(listen_str))) {
-//				ok = 0;
-//			} else {
-//				iface = *(unsigned long *)hp->h_addr;
-//			}
-//		}
-//		if (ok) {
 			screen->listenInterface = iface;
-//		}
     }
-
-//screen->listenInterface = htonl(INADDR_LOOPBACK);
-//screen->listenInterface = htonl(listen_str);
 
 //    static const char* passwords[2]={"secret",0};
 //    screen->authPasswdData=(void*)passwords;
@@ -1972,8 +1951,6 @@ main (int argc, char** argv)
 	char jid[10];
 	memset(jid,0,sizeof(jid));
 	sprintf(jid,"%d",findjid);
-
-//	printf("%s %s\n",jid,findjname);
 
 #ifdef DEBUG
   rfbLogEnable (1);
@@ -2188,24 +2165,24 @@ print_jail(int pflags, int jflags)
 
 int is_numbercmd(int argc, char **argv)
 {
-        if (argv[1])
-            return is_number(argv[1]);
-        else
-            return 1;
+	if (argv[1])
+		return is_number(argv[1]);
+	else
+		return 1;
 }
 
 
 int is_number(const char *p)
 {
-        const char *q;
+	const char *q;
 
-        if (*p == '\0')
-                return 0;
-        while (*p == '0')
-                p++;
-        for (q = p; *q != '\0'; q++)
-                if (! is_digit(*q))
-                        return 0;
-        if (q - p > 10000 ) return 0;
-        return 1;
+	if (*p == '\0')
+		return 0;
+	while (*p == '0')
+		p++;
+	for (q = p; *q != '\0'; q++)
+		if (! is_digit(*q))
+			return 0;
+	if (q - p > 10000 ) return 0;
+	return 1;
 }
