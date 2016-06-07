@@ -76,6 +76,8 @@ int isnum = 0;
 int findjid = -1;
 char *findjname = NULL;
 char vncpassword[50];
+int vncport = 0;
+char *listen_str;
 
 #define is_digit(c)	((unsigned int)((c) - '0') <= 9)
 
@@ -1763,6 +1765,7 @@ vncTerm *
 create_vncterm (int argc, char** argv, int maxx, int maxy)
 {
   int i;
+  int ok;
 
   rfbScreenInfoPtr screen = rfbGetScreen (&argc, argv, maxx, maxy, 8, 1, 1);
   screen->frameBuffer=(char*)calloc(maxx*maxy, 1);
@@ -1795,6 +1798,35 @@ create_vncterm (int argc, char** argv, int maxx, int maxy)
 	static const char* passwords[2]={vncpassword,0};
 	screen->authPasswdData=(void*)passwords;
     }
+
+    if ( vncport != 0 ) screen->port = vncport;
+
+    ok = 1;
+
+    if (listen_str != NULL) {
+//		screen->listenInterface = htonl(INADDR_ANY);
+//	} else if (!strcmp(listen_str, "localhost")) {
+//		screen->listenInterface = htonl(INADDR_LOOPBACK);
+//	} else {
+//		struct hostent *hp;
+		in_addr_t iface = inet_addr(listen_str);
+
+//		if (iface == htonl(INADDR_NONE)) {
+//			if (!host_lookup) {
+//				ok = 0;
+//			} else if (!(hp = gethostbyname(listen_str))) {
+//				ok = 0;
+//			} else {
+//				iface = *(unsigned long *)hp->h_addr;
+//			}
+//		}
+//		if (ok) {
+			screen->listenInterface = iface;
+//		}
+    }
+
+//screen->listenInterface = htonl(INADDR_LOOPBACK);
+//screen->listenInterface = htonl(listen_str);
 
 //    static const char* passwords[2]={"secret",0};
 //    screen->authPasswdData=(void*)passwords;
@@ -1880,30 +1912,38 @@ main (int argc, char** argv)
 
 	memset(vncpassword,0,sizeof(vncpassword));
 
-	while ((c = getopt(argc, argv, "j:s:p:")) >= 0)
-	switch (c) {
-		case 'j':
-			findjid = strtoul(optarg, &ep, 10);
-			if (!findjid || *ep) {
-				findjid = 0;
-				findjname = optarg;
-				isnum = 0;
-			} else {
-				isnum = 1;
-			}
-			break;
-		case 's':
-			command = malloc(strlen(optarg) + 1);
-			memset(command, 0, strlen(optarg) + 1);
-			strcpy(command, optarg);
-			break;
-		case 'p':
-			strcpy(vncpassword,optarg);
-			break;
-	}
+	while ((c = getopt(argc, argv, "a:j:p:s:t:w:")) >= 0)
+		switch (c) {
+			case 'a':
+				listen_str = malloc(strlen(optarg) + 1);
+				memset(listen_str, 0, strlen(optarg) + 1);
+				strcpy(listen_str, optarg);
+				break;
+			case 'j':
+				findjid = strtoul(optarg, &ep, 10);
+				if (!findjid || *ep) {
+					findjid = 0;
+					findjname = optarg;
+					isnum = 0;
+				} else {
+					isnum = 1;
+				}
+				break;
+			case 'p':
+				vncport = atoi(optarg);
+				break;
+			case 's':
+				command = malloc(strlen(optarg) + 1);
+				memset(command, 0, strlen(optarg) + 1);
+				strcpy(command, optarg);
+				break;
+			case 'w':
+				strcpy(vncpassword,optarg);
+				break;
+		}
 
 	if ((findjid==-1)&&(!findjname)) {
-		printf("usage: svncterm -j [ jid or jname] [-s command/shell (/bin/csh)] [-p password]\n");
+		printf("usage: svncterm -j [ jid or jname] [-a listen addr ] [-p port ] [-s command/shell (/bin/csh)] [-t connect timeout] [-w password]\n");
 		return 1;
 	}
 
