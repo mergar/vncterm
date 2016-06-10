@@ -77,6 +77,8 @@ char *findjname = NULL;
 char vncpassword[50];
 int vncport = 0;
 char *listen_str;
+char *storeconfig;
+char *pidfile;
 
 #define is_digit(c)	((unsigned int)((c) - '0') <= 9)
 
@@ -1891,12 +1893,22 @@ main (int argc, char** argv)
 
 	memset(vncpassword,0,sizeof(vncpassword));
 
-	while ((c = getopt(argc, argv, "a:j:p:s:t:w:")) >= 0)
+	while ((c = getopt(argc, argv, "a:c:i:j:p:s:t:w:")) >= 0)
 		switch (c) {
 			case 'a':
 				listen_str = malloc(strlen(optarg) + 1);
 				memset(listen_str, 0, strlen(optarg) + 1);
 				strcpy(listen_str, optarg);
+				break;
+			case 'c':
+				storeconfig = malloc(strlen(optarg) + 1);
+				memset(storeconfig, 0, strlen(optarg) + 1);
+				strcpy(storeconfig, optarg);
+				break;
+			case 'i':
+				pidfile = malloc(strlen(optarg) + 1);
+				memset(pidfile, 0, strlen(optarg) + 1);
+				strcpy(pidfile, optarg);
 				break;
 			case 'j':
 				findjid = strtoul(optarg, &ep, 10);
@@ -1922,7 +1934,7 @@ main (int argc, char** argv)
 		}
 
 	if ((findjid==-1)&&(!findjname)) {
-		printf("usage: svncterm -j [ jid or jname] [-a listen addr ] [-p port ] [-s command/shell (/bin/csh)] [-t connect timeout] [-w password]\n");
+		printf("usage: svncterm -j [ jid or jname] [-a listen addr ] [-p port ] [-s command/shell (/bin/csh)] [-t connect timeout] [-w password] [-c storeconfig] [-i pidfile]\n");
 		return 1;
 	}
 
@@ -1958,6 +1970,15 @@ main (int argc, char** argv)
   rfbLogEnable (0);
 #endif
 
+    pid=getpid();
+
+     if (strlen(pidfile)>2) {
+		FILE *fp=fopen(pidfile,"w");
+		fprintf(fp,"%d\n",pid);
+		fclose(fp);
+	}
+
+
   vncTerm *vt = create_vncterm (argc, argv, 745, 400);
 
   setlocale(LC_ALL, ""); // set from environment
@@ -1975,6 +1996,7 @@ main (int argc, char** argv)
   setenv ("TERM", TERM, 1);
 
   pid = forkpty (&master, ptyname, NULL, &dimensions);
+
   if(!pid) {
 
     // install default signal handlers
