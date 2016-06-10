@@ -1800,7 +1800,13 @@ create_vncterm (int argc, char** argv, int maxx, int maxy)
 	screen->authPasswdData=(void*)passwords;
     }
 
-    if ( vncport != 0 ) screen->port = vncport;
+    if ( vncport != 0 ) {
+		screen->port = vncport;
+    }
+    //else {
+//		vncport=FindFreeTcpPort();
+//		screen->port = vncport;
+//    }
 
     ok = 1;
 
