@@ -3,4 +3,5 @@ SECCMD="\
 ${SECCMD}
 vncterm \
 vncterm-daemon \
+jvncall \
 "
