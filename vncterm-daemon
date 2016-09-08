@@ -79,7 +79,7 @@ case "${mode}" in
 			err 1 "${MAGENTA}Locked by ${vnc_lockfile} with pid: ${GREEN}${pid}${NORMAL}"
 		fi
 
-		vncstat="${jailsysdir}/${jname}/vncterm.txt"
+		vncstat="${jailsysdir}/${jname}/vnc_port"
 
 		trap "/bin/rm -f ${vnc_lockfile} ${vnc_pidfile} ${vncstat}" HUP INT ABRT BUS TERM EXIT KILL
 

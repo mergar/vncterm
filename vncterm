@@ -1,5 +1,5 @@
 #!/usr/local/bin/cbsd
-#v10.3.0
+#v11.0.0
 MYARG="jname mode"
 MYOPTARG="addr vm_port command password"
 MYDESC="Run VNC server for jail"
@@ -24,7 +24,7 @@ cbsdvnc="${moduledir}/vncterm.d/cbsdvnc"
 
 [ ! -x "${cbsdvnc}" ] && err 1 "${MAGENTA}No cbsdvnc, please do: ${GREEN}make -C ${moduledir}/vncterm.d${NORMAL}"
 
-vncstat="${jailsysdir}/${jname}/vncterm.txt"
+vncstat="${jailsysdir}/${jname}/vnc_port"
 
 case "${mode}" in
 	run)
