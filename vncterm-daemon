@@ -1,5 +1,5 @@
 #!/usr/local/bin/cbsd
-#v10.3.0
+#v11.0.0
 MYARG="jname mode"
 MYOPTARG="addr vm_port command password"
 MYDESC="Run VNC server for jail"
@@ -71,6 +71,9 @@ vnc_stop()
 	exit 0
 }
 
+vnc_port="${jailsysdir}/${jname}/vnc_port"
+
+
 case "${mode}" in
 	run)
 		if [ -f "${vnc_lockfile}" ]; then
@@ -79,9 +82,7 @@ case "${mode}" in
 			err 1 "${MAGENTA}Locked by ${vnc_lockfile} with pid: ${GREEN}${pid}${NORMAL}"
 		fi
 
-		vncstat="${jailsysdir}/${jname}/vnc_port"
-
-		trap "/bin/rm -f ${vnc_lockfile} ${vnc_pidfile} ${vncstat}" HUP INT ABRT BUS TERM EXIT KILL
+		trap "/bin/rm -f ${vnc_lockfile} ${vnc_pidfile} ${vncstat} ${vnc_port}" HUP INT ABRT BUS TERM EXIT KILL
 
 		stopme=0
 
@@ -89,6 +90,8 @@ case "${mode}" in
 password=${password}
 vm_port=${vm_port}
 EOF
+
+		echo "${vm_port}" > ${vnc_port}
 
 		while [ ${stopme} -eq 0 ]; do
 			/usr/sbin/daemon /usr/bin/lockf -s -t0 ${vnc_lockfile} ${cbsdvnc} -j ${jid} -s ${command} ${password_args} ${port_args} ${addr_args} -i ${vnc_pidfile}
@@ -105,8 +108,14 @@ EOF
 	status)
 		if [ -f ${vnc_lockfile} ]; then
 			_pid=0
+			if [ -r ${vncstat} ]; then
+				_vncport=$( /bin/cat ${vnc_port} )
+			else
+				_vncport="Unknown"
+			fi
+
 			[ -f ${vnc_pidfile} ] && _pid=$( /bin/cat ${vnc_pidfile} )
-			${ECHO} "${MAGENTA}VNC enabled with pid: ${GREEN}${_pid}${NORMAL}"
+			${ECHO} "${MAGENTA}VNC enabled with pid: ${GREEN}${_pid}${MAGENTA}. Port: ${GREEN}${_vncport}${NORMAL}"
 		else
 			${ECHO} "${MAGENTA}VNC not active${NORMAL}"
 		fi

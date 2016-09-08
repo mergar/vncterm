@@ -20,11 +20,11 @@ init $*
 [ $? -eq 1 ] && err 1 "${MAGENTA}No such jail: ${GREEN}${jname}${NORMAL}"
 [ ${jid} -eq 0 ] && err 1 "${MAGENTA}Not running${NORMAL}"
 
-cbsdvnc="${moduledir}/vncterm.d/cbsdvnc"
+vncstat="${moduledir}/vncterm.d/cbsdvnc"
 
 [ ! -x "${cbsdvnc}" ] && err 1 "${MAGENTA}No cbsdvnc, please do: ${GREEN}make -C ${moduledir}/vncterm.d${NORMAL}"
 
-vncstat="${jailsysdir}/${jname}/vnc_port"
+vnc_port="${jailsysdir}/${jname}/vnc_port"
 
 case "${mode}" in
 	run)
