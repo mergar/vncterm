@@ -21,7 +21,7 @@ case "${mode}" in
 	run)
 		for i in ${active_jname}; do
 			${ECHO} "${MAGENTA}Starting VNC for: ${GREEN}${i}${NORMAL}"
-			vncterm jname=${i} mode=run
+			vncterm jname=${i} mode=run addr=127.0.0.1
 			sleep 2
 		done
 		;;
