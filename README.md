@@ -1,3 +1,3 @@
 # CBSD module for vncize jail
 
-dependency: libvncserver
+dependency: security/gnutls net/libvncserver
