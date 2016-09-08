@@ -16,6 +16,30 @@ password= set password\n"
 
 init $*
 
+test_for_stop()
+{
+	local _test
+
+	if [ -f ${vnc_lockfile}.stop ]; then
+		vnc_stop
+		stopme=1
+	fi
+	return 0
+}
+
+vnc_stop()
+{
+	local _pid
+
+	[ ! -f ${vnc_pidfile} ] && exit 0
+	_pid=$( /bin/cat ${vnc_pidfile} )
+
+	kill -9 ${_pid}
+
+	/bin/rm -f ${vnc_lockfile} ${vnc_lockfile}.stop
+	exit 0
+}
+
 . ${jrcconf}
 [ $? -eq 1 ] && err 1 "${MAGENTA}No such jail: ${GREEN}${jname}${NORMAL}"
 [ ${jid} -eq 0 ] && err 1 "${MAGENTA}Not running${NORMAL}"
@@ -47,32 +71,7 @@ fi
 vnc_lockfile="/tmp/cbsd-vnc-${jname}.lock"
 vnc_pidfile="/tmp/cbsd-vnc-${jname}.pid"
 
-test_for_stop()
-{
-	local _test
-
-	if [ -f ${vnc_lockfile}.stop ]; then
-		vnc_stop
-		stopme=1
-	fi
-	return 0
-}
-
-vnc_stop()
-{
-	local _pid
-
-	[ ! -f ${vnc_pidfile} ] && exit 0
-	_pid=$( /bin/cat ${vnc_pidfile} )
-
-	kill -9 ${_pid}
-
-	/bin/rm -f ${vnc_lockfile} ${vnc_lockfile}.stop
-	exit 0
-}
-
 vnc_port="${jailsysdir}/${jname}/vnc_port"
-
 
 case "${mode}" in
 	run)
@@ -86,11 +85,7 @@ case "${mode}" in
 
 		stopme=0
 
-		/bin/cat > ${vncstat} <<EOF
-password=${password}
-vm_port=${vm_port}
-EOF
-
+		[ -n "${password}" ] && echo "password=${password}" > ${vncstat}
 		echo "${vm_port}" > ${vnc_port}
 
 		while [ ${stopme} -eq 0 ]; do
