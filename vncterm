@@ -54,6 +54,8 @@ case "${mode}" in
 		fi
 		exit 0
 		;;
+	stop)
+		vncterm-daemon jname=$jname mode=stop
 esac
 
 exec daemon cbsd vncterm-daemon $*

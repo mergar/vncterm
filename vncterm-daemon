@@ -36,6 +36,10 @@ vnc_stop()
 
 	kill -9 ${_pid}
 
+	# extra check for no any vncterm process related to this jail is active
+	epid=$( /bin/ps axopid,ucomm,command | /usr/bin/grep "${moduledir}/vncterm.d/cbsdvnc -j ${jid} " |/usr/bin/grep -v grep |/usr/bin/awk '{printf $1" "}' )
+	[ -n "${epid}" ] && kill -9 ${epid} > /dev/null 2>&1
+
 	/bin/rm -f ${vnc_lockfile} ${vnc_lockfile}.stop
 	exit 0
 }
