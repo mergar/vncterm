@@ -60,6 +60,8 @@ case "${mode}" in
 		exit 0
 		;;
 	stop)
-		vncterm-daemon jname=$jname mode=stop
+		/usr/bin/touch ${vnc_lockfile}.stop
+		/bin/rm -f ${vnc_lockfile}
+#		vncterm-daemon jname=$jname mode=stop
 		exit 0
 esac

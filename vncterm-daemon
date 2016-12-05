@@ -23,9 +23,9 @@ test_for_stop()
 	if [ -f ${vnc_lockfile}.stop ]; then
 		vnc_stop
 		stopme=1
+		echo "${vnc_lockfile}.stop exist" >> /tmp/vnclog.txt
+		exit 64
 	fi
-
-	exit 64
 }
 
 vnc_stop()
@@ -121,7 +121,7 @@ case "${mode}" in
 		exit 0
 		;;
 	stop)
-		/usr/bin/touch ${vnc_lockfile}.stop
+		#/usr/bin/touch ${vnc_lockfile}.stop
 		/bin/rm -f ${vnc_lockfile}
 		;;
 	*)
