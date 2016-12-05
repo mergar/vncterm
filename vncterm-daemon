@@ -24,7 +24,8 @@ test_for_stop()
 		vnc_stop
 		stopme=1
 	fi
-	return 0
+
+	exit 64
 }
 
 vnc_stop()
@@ -41,7 +42,6 @@ vnc_stop()
 	[ -n "${epid}" ] && kill -9 ${epid} > /dev/null 2>&1
 
 	/bin/rm -f ${vnc_lockfile} ${vnc_lockfile}.stop
-	exit 0
 }
 
 . ${jrcconf}
@@ -122,7 +122,6 @@ case "${mode}" in
 		;;
 	stop)
 		/usr/bin/touch ${vnc_lockfile}.stop
-#		/usr/bin/touch ${vnc_lockfile}
 		/bin/rm -f ${vnc_lockfile}
 		;;
 	*)
