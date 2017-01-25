@@ -39,7 +39,7 @@ case "${mode}" in
 			/bin/cat ${vncstat}
 			exit 0
 		fi
-		exec daemon -f /root/run/runcron /usr/local/bin/cbsd vncterm-daemon $*
+		exec daemon -f ${moduledir}/vncterm.d/runcron /usr/local/bin/cbsd vncterm-daemon $*
 		;;
 	status)
 		if [ -f ${vnc_lockfile} ]; then
