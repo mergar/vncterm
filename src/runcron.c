@@ -8,6 +8,8 @@
 // Запуск:
 //     runcron <cmd> ...
 //     runcron -a action-hook.sh -s nobody@nowhere.here vmstat 10
+// Author: Oleg Ginzburg <olevole@olevole.ru>
+// https://github.com/olevole/runcron
 #include <err.h>
 #include <errno.h>
 #include <fcntl.h>
